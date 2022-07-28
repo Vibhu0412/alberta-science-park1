@@ -1,0 +1,9 @@
+# Django #
+*.log
+*.pot
+*.pyc
+*.idea/
+__pycache__
+media
+.env
+
