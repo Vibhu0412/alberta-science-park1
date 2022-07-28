@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-sw9$(m9+wzkyuvd%769_csaz)lvoqwl&#2g6t46+=%miwifc8m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['asp-sprint1.herokuapp.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['dev-alberta.herokuapp.com', '127.0.0.1', 'localhost', 'alpha-alberta.herokuapp.com', 'beta-alberta.herokuapp.com']
 
 # Application definition
 
