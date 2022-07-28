@@ -134,6 +134,8 @@ class BusinessInformation(models.Model):
     user = models.OneToOneField(User, related_name="Business", on_delete=models.CASCADE)
 
     company_name = models.CharField(max_length=50, blank=True, null=True)
+    company_website = models.URLField(blank=True, null=True)
+    company_description = models.TextField(blank=True, null=True)
     company_email = models.EmailField(unique=True, max_length=50, blank=True, null=True)
     company_phone = models.CharField(max_length=13, blank=True, null=True)
     company_address_line_1 = models.CharField(max_length=100, blank=True, null=True)

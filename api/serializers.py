@@ -206,7 +206,7 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
         model = BusinessInformation
         fields = ['id', 'company_name', 'company_email', 'company_phone', 'company_address_line_1',
                   'company_address_line_2', 'company_classification', 'company_city', 'company_state',
-                  'company_country']
+                  'company_country', 'company_website', 'company_description']
 
     def validate(self, attrs):
         user = self.context.get('user')
@@ -229,7 +229,7 @@ class BusinessProfileUpdateSerializer(serializers.ModelSerializer):
         model = BusinessInformation
         fields = ['id', 'company_name', 'company_email', 'company_phone', 'company_address_line_1',
                   'company_address_line_2', 'company_classification', 'company_city', 'company_state',
-                  'company_country']
+                  'company_country', 'company_website', 'company_description']
 
     def validate(self, attrs):
         user = self.context.get('user')
@@ -248,6 +248,8 @@ class BusinessProfileUpdateSerializer(serializers.ModelSerializer):
         instance.company_city = validated_data.get("company_city", instance.company_city)
         instance.company_state = validated_data.get("company_state", instance.company_state)
         instance.company_country = validated_data.get("company_country", instance.company_country)
+        instance.company_website = validated_data.get("company_website", instance.company_website)
+        instance.company_description = validated_data.get("company_description", instance.company_description)
 
         instance.save()
         return instance
