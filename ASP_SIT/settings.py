@@ -184,16 +184,7 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://thesciencepark.dev",
-    "http://thesciencepark.dev",
-    "https://dev.thesciencepark.dev/",
-    "https://alpha.thesciencepark.dev",
-    "https://beta.thesciencepark.dev",
-
-]
+CORS_ORIGIN_ALLOW_ALL=True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
