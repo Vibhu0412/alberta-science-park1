@@ -225,4 +225,4 @@ GRAPH_MODELS = {
 
 
 # LIVE DOMAIN NAME
-DOMAIN_NAME = "http://`localhost`:3000/"
+DOMAIN_NAME = "https://dev.thesciencepark.dev/"
