@@ -1,0 +1,6 @@
+{% load i18n %}
+{% blocktrans %}Hello!
+You're receiving this e-mail because you've been invited by Alberta Science Park.
+
+{% endblocktrans %}
+

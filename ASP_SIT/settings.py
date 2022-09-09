@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-sw9$(m9+wzkyuvd%769_csaz)lvoqwl&#2g6t46+=%miwifc8m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['dev-alberta.herokuapp.com', '127.0.0.1', 'localhost', 'alpha-alberta.herokuapp.com', 'beta-alberta.herokuapp.com']
+ALLOWED_HOSTS = ['asp-sprint1.herokuapp.com', '127.0.0.1', 'localhost',
+                 'dev-alberta.herokuapp.com', 'alpha-alberta.herokuapp.com', 'beta-alberta.herokuapp.com']
 
 # Application definition
 
@@ -36,8 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'corsheaders',
     'rest_framework',
+    'django_extensions',
+
     'api',
     'challenge_creator',
     'solution_seeker',
@@ -51,6 +55,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -151,26 +156,26 @@ REST_FRAMEWORK = {
 }
 
 # Email Configuration
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-# EMAIL_HOST_USER = 'vbpurohit1948@gmail.com'
-# # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-# EMAIL_HOST_PASSWORD = 'viqzxhfvbnmgiwkh'
-# EMAIL_USE_TLS = True
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = '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'
-EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_USER = 'vbpurohit1948@gmail.com'
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'viqzxhfvbnmgiwkh'
+EMAIL_USE_TLS = True
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.sendgrid.net'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'apikey'
+# EMAIL_HOST_PASSWORD = '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'
+# EMAIL_USE_SSL = True
 
 
 # Configure the JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=200),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -189,10 +194,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://thesciencepark.dev",
     "http://thesciencepark.dev",
-    "https://dev.thesciencepark.dev/",
-    "http://dev.thesciencepark.dev/",
+    "https://dev.thesciencepark.dev",
     "https://alpha.thesciencepark.dev",
     "https://beta.thesciencepark.dev",
+    "https://alberta.vercel.app",
 
 ]
 
@@ -201,12 +206,23 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://thesciencepark.dev",
     "http://thesciencepark.dev",
-    "https://dev.thesciencepark.dev/",
-    "http://dev.thesciencepark.dev/",
+    "https://dev.thesciencepark.dev",
     "https://alpha.thesciencepark.dev",
     "https://beta.thesciencepark.dev",
+    "https://alberta.vercel.app",
 
 ]
 
 # PasswordResetTokenGenerator functionality
 PASSWORD_RESET_TIMEOUT = 900    # 900 Sec = 15 Min validity of token
+
+
+# Django Extensions
+GRAPH_MODELS = {
+    'all_applications': True,
+    'group_models': True
+}
+
+
+# LIVE DOMAIN NAME
+DOMAIN_NAME = "http://`localhost`:3000/"

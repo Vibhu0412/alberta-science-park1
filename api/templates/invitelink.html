@@ -1,0 +1,41 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .GFG {
+            background-color: green;
+            color: beige;
+            padding: 5px 10px;
+            text-align: center;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+{% blocktrans %}
+    Hello!
+{% endblocktrans %}
+{% blocktrans %}
+    We are pleased to inform you that you have been invited to the Alberta Science Park by '{{ company_name }} '. "
+{% endblocktrans %}
+<br/>
+
+<div class="GFG">
+    <a href="{{ accept_link }}"> Yes </a> <br/>
+</div>
+
+<div class="GFG">
+    <a href="{{ reject_link }}"> Yes </a> <br/>
+</div>
+
+</body>
+</html>
+
+
+
+{#{% blocktrans %}In case you forgot, your email is {{ email }}.{% endblocktrans %}#}
+{#{% blocktrans %}Have a great day!#}
+{#{% endblocktrans %}#}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, PersonalInformation, BusinessInformation, UserRole
+from .models import User, PersonalInformation, BusinessInformation, UserRole, InvitedUser
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -15,11 +15,11 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('id', 'username', 'email', 'is_staff')
+    list_display = ('id', 'username', 'email', 'can_invite_others', 'is_staff')
     list_filter = ('is_staff',)
     fieldsets = (
         ('User Credentails', {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('username', 'role',)}),
+        ('Personal info', {'fields': ('username', 'can_invite_others')}),
         ('Permissions', {'fields': ('is_admin', 'is_challenge_creator', 'is_solution_provider', 'is_manager', 'is_staff')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -48,10 +48,15 @@ class PersonalInformationAdmin(admin.ModelAdmin):
 
 
 class BusinessInformationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'company_name', 'company_phone', 'company_classification')
+    list_display = ('id', 'user_id', 'user','company_name', 'company_phone', 'company_classification')
+
+
+class InvitedUserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'email', 'invited_by', 'is_registered', 'can_invite_others','company_name')
 
 
 admin.site.register(PersonalInformation, PersonalInformationAdmin)
 admin.site.register(BusinessInformation, BusinessInformationAdmin)
 admin.site.register(UserRole)
+admin.site.register(InvitedUser, InvitedUserAdmin)
 admin.site.site_header = "Alberta Science Park"

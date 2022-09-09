@@ -42,6 +42,7 @@ class User(AbstractBaseUser):
     username = models.CharField(unique=True, max_length=20)
     role = models.ManyToManyField(UserRole, related_name='role')
 
+    can_invite_others = models.BooleanField(default=True)
     is_fresh_login = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
@@ -73,6 +74,10 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return self.is_staff
 
+    @property
+    def full_name(self):
+        return f'{self.Personal.first_name} {self.Personal.last_name}'
+
     class META:
         verbose_name = 'user'
         verbose_name_plural = 'users'
@@ -88,10 +93,11 @@ class PersonalInformation(models.Model):
         (SENIOR, 'Senior'),
         (EXPERT, 'Expert'),
     )
-    user = models.OneToOneField(User, related_name="Personal", on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name="personal", on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
     personal_email = models.EmailField(unique=True, blank=True, null=True)
+    personal_skills = models.CharField(max_length=2000, blank=True, null=True)
 
     office_phone = models.CharField(max_length=13, blank=True, null=True)
     education = models.CharField(max_length=255, blank=True, null=True)
@@ -116,6 +122,12 @@ class PersonalInformation(models.Model):
     def full_address(self):
         return f'{self.address_line_1} {self.address_line_2}'
 
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+
+
+
 
 class BusinessInformation(models.Model):
     SECTOR_11 = 'S11'
@@ -131,7 +143,8 @@ class BusinessInformation(models.Model):
         (SECTOR_23, 'Construction'),
         (SECTOR_31, 'Manufacturing'),
     )
-    user = models.OneToOneField(User, related_name="Business", on_delete=models.CASCADE)
+    userid = models.IntegerField(blank=True, null=True)
+    user = models.ForeignKey(User, related_name="Business", on_delete=models.CASCADE)
 
     company_name = models.CharField(max_length=50, blank=True, null=True)
     company_website = models.URLField(blank=True, null=True)
@@ -146,6 +159,8 @@ class BusinessInformation(models.Model):
     company_state = models.CharField(max_length=20, blank=True, null=True)
     company_country = models.CharField(max_length=20, blank=True, null=True)
 
+    invite_through_company = models.BooleanField(default=False)
+
     class Meta:
         verbose_name = 'Business Information'
         verbose_name_plural = 'Business Information'
@@ -156,3 +171,28 @@ class BusinessInformation(models.Model):
     def full_address(self):
         return f'{self.company_address_line_1} {self.company_address_line_2}'
 
+
+class InvitedUser(models.Model):
+    email = models.EmailField()
+    invited_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="invitedby")
+    company_name = models.CharField(max_length=50, blank=True, null=True)
+    invite_limit = models.IntegerField(default=2)
+    can_invite_others = models.BooleanField(default=True)
+
+    is_accepted= models.BooleanField(default=False)
+    is_decline = models.BooleanField(default=False)
+
+    is_registered = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(default=timezone.now)
+
+    class META:
+        verbose_name = 'Invited User'
+        verbose_name_plural = 'Invited Users'
+
+    def __str__(self):
+        return self.email
+
+    def fetch_invited_by(self):
+        return self.invited_by.email
