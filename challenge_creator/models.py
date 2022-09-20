@@ -1,6 +1,6 @@
 from django.db import models
 from api.models import User, BusinessInformation
-
+from django.utils import timezone
 
 # Create your models here.
 class Industry(models.Model):
@@ -15,8 +15,8 @@ class Industry(models.Model):
     # id = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, primary_key=True)
     name = models.CharField(max_length=50, choices=INDUSTRY_CHOICES)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(default=timezone.now)
 
     class META:
         verbose_name = 'Challenge Industry'
@@ -50,8 +50,8 @@ class ChallengeStatement(models.Model):
 
     is_active = models.BooleanField(default=True)
     is_archieve = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     ## New ##
 
@@ -75,8 +75,8 @@ class Comment(models.Model):
     commented_by = models.ForeignKey(User, on_delete=models.CASCADE)
     company_name = models.ForeignKey(BusinessInformation, on_delete=models.CASCADE, null=True, blank=True)
     user_comment = models.CharField(max_length=500)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.user_comment[:20]
