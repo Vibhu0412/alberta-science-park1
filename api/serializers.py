@@ -11,7 +11,8 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .utils import Util
 from ASP_SIT.settings import DOMAIN_NAME
 from challenge_creator.serializers import UserSerializer
-
+import os
+from django.core.exceptions import ValidationError
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -608,8 +609,6 @@ class BusinessLabEquipmentsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 def validate_file_extension(value):
-    import os
-    from django.core.exceptions import ValidationError
     print("VALUE ===== ", value)
     ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
     valid_extensions = ['.pdf', '.doc', '.docx', '.jpg', '.png',

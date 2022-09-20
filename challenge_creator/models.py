@@ -53,17 +53,13 @@ class ChallengeStatement(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
-    ## New ##
-
-
     class Meta:
         verbose_name = 'Challenge Statement'
         verbose_name_plural = 'Challenge Statement'
 
-    def full_name(self):
-        return f'{self.user.Personal.first_name} {self.user.Personal.last_name}'
+    # def full_name(self):
+    #     return f'{self.user.Personal.first_name} {self.user.Personal.last_name}'
         # return f'{self.first_name} {self.last_name}'
-
 
     def __str__(self):
         return f"{self.challenge_title[0:20]} ..."

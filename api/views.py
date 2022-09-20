@@ -1042,10 +1042,15 @@ class PersonalDocumentUploadViewSet(viewsets.ModelViewSet):
         documents_upload = self.request.data
         documents_upload['user'] = self.request.user.id
         serializer = self.serializer_class(data=documents_upload)
+        print("FILENAME == ",documents_upload['upload_documents'])
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response = Response(serializer.data, status=status.HTTP_201_CREATED)
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(documents_upload['upload_documents'])
+
+            print("RESPONSE ===== ", response)
+            return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):
