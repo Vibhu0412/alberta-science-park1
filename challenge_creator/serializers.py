@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import User, PersonalInformation, BusinessInformation
+from api.models import User, PersonalInformation, BusinessInformation, BusinessLabEquipments
 from .models import ChallengeStatement, Comment
 
 
@@ -9,8 +9,6 @@ from .models import ChallengeStatement, Comment
 #         fields=['id','first_name','last_name']
 
 ## New ##
-
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,7 +25,7 @@ class ListRetrieveChallengeStatementSerializer(serializers.ModelSerializer):
     # print('FULL NAME ============', full_name)
 
     user = UserSerializer()
-    company_name =BusinessProfileSerializer()
+    company_name = BusinessProfileSerializer()
     # print('user===', user)
     # get_first_name = PersonalInformation.objects.select_related('user__solutioninformationprofile').values()
     # print('First Name ===', get_first_name)
@@ -85,5 +83,6 @@ class ListCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields= ['id','post','commented_by', 'company_name','user_comment','created_at','updated_at']
+
 
 

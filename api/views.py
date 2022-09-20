@@ -1,11 +1,16 @@
 from django.http import Http404
 from django.shortcuts import render
-from .models import User, PersonalInformation, BusinessInformation, UserRole, InvitedUser
+from .models import User, PersonalInformation, BusinessInformation, UserRole, InvitedUser \
+    , ProfessionalExperience, PersonalEducation, LanguagesSpoken, BusinessLabEquipments,\
+    PersonalDocumentUpload, PersonalCertificates, HonorsAndAwards
+
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, \
     UserChangePasswordSerializer, SendPasswordResetEmailSerializer, UserPasswordResetSerializer, \
     PersonalProfileSerializer, PersonalProfileUpdateSerializer, BusinessProfileUpdateSerializer, \
     BusinessProfileSerializer, RoleRegisterSerializer, SendInviteLinkSerializer, FetchInvitedUserSerializer, \
-    FetchCompanySerializer, InviteNotificationSerializer
+    FetchCompanySerializer, InviteNotificationSerializer, PersonalEducationSerializer, ProfessionalExperienceSerializer,\
+    LanguagesSpokenSerializer, BusinessLabEquipmentsSerializer,PersonalDocumentUploadSerializer,HonorsAndAwardsSerializer,\
+    PersonalCertificatesSerializer
 from . import signals
 from django.contrib.auth import authenticate
 from .renderers import UserRenderer
@@ -13,9 +18,12 @@ from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.sites.shortcuts import get_current_site
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser, FileUploadParser
+
 from django.utils.encoding import smart_str, force_bytes
 from django.utils.http import  urlsafe_base64_decode
 from .activationtokens import account_activation_token
@@ -797,6 +805,7 @@ class FetchCompanyApiView(APIView):
 
 class InviteNotificationApiView(APIView):
     serializer_class = InviteNotificationSerializer
+
     permission_classes = (AllowAny,)
     renderer_classes = [UserRenderer]
 
@@ -891,5 +900,156 @@ class InviteNotificationApiView(APIView):
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
+class PersonalEducationViewSet(viewsets.ModelViewSet):
+    serializer_class = PersonalEducationSerializer
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+    queryset = PersonalEducation.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        education_data = self.request.data
+        education_data['user'] = self.request.user.id
+        serializer = self.serializer_class(data=education_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = PersonalEducation.objects.filter(user=request.user).order_by('-end_date')
+        serializer = PersonalEducationSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProfessionalExperienceViewSet(viewsets.ModelViewSet):
+    serializer_class = ProfessionalExperienceSerializer
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+    queryset = ProfessionalExperience.objects.all().order_by('-start_date')
+
+    def create(self, request, *args, **kwargs):
+        experience_data = self.request.data
+        experience_data['user'] = self.request.user.id
+        serializer = self.serializer_class(data=experience_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = ProfessionalExperience.objects.filter(user=request.user).order_by('-end_date')
+        serializer = ProfessionalExperienceSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class LanguagesSpokenViewSet(viewsets.ModelViewSet):
+    serializer_class = LanguagesSpokenSerializer
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
+    queryset = LanguagesSpoken.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        experience_data = self.request.data
+        experience_data['user'] = self.request.user.id
+        serializer = self.serializer_class(data=experience_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = LanguagesSpoken.objects.filter(user=request.user)
+        serializer = LanguagesSpokenSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class HonorsAndAwardsViewSet(viewsets.ModelViewSet):
+    serializer_class = HonorsAndAwardsSerializer
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    queryset = HonorsAndAwards.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        awards_data = self.request.data
+        awards_data['user'] = self.request.user.id
+        serializer = self.serializer_class(data=awards_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = HonorsAndAwards.objects.filter(user=request.user)
+        serializer = HonorsAndAwardsSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PersonalCertificatesViewSet(viewsets.ModelViewSet):
+    serializer_class = PersonalCertificatesSerializer
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    queryset = PersonalCertificates.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        certificate_data = self.request.data
+        certificate_data['user'] = self.request.user.id
+        serializer = self.serializer_class(data=certificate_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = PersonalCertificates.objects.filter(user=request.user)
+        serializer = PersonalCertificatesSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class BusinessLabEquipmentsViewSet(viewsets.ModelViewSet):
+    serializer_class = BusinessLabEquipmentsSerializer
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    queryset = BusinessLabEquipments.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        lab_equipments = self.request.data
+        lab_equipments['user'] = self.request.user.id
+        serializer = self.serializer_class(data=lab_equipments)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = BusinessLabEquipments.objects.filter(user=request.user)
+        serializer = BusinessLabEquipmentsSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PersonalDocumentUploadViewSet(viewsets.ModelViewSet):
+    serializer_class = PersonalDocumentUploadSerializer
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FileUploadParser, )
+    queryset = PersonalDocumentUpload.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        documents_upload = self.request.data
+        documents_upload['user'] = self.request.user.id
+        serializer = self.serializer_class(data=documents_upload)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = PersonalDocumentUpload.objects.filter(user=request.user)
+        serializer = PersonalDocumentUploadSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 

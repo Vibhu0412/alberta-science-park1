@@ -1,4 +1,5 @@
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from challenge_creator.serializers import ChallengeStatementSerializer, ListRetrieveChallengeStatementSerializer, \
@@ -19,6 +20,8 @@ class ChallengeStatementViewSet(ModelViewSet):
     queryset = ChallengeStatement.objects.all().order_by('-created_at')
     # permission_classes = [IsAuthenticated, IsChallengeCreator | IsOwner]
     # permission_classes = [IsAuthenticated, IsChallengeCreator | IsManager]
+    # pagination_class = PageNumberPagination
+    # page_size = 2
     permission_classes = [IsAuthenticated, IsOwner]
     renderer_classes = [ChallengeCreatorRenderer]
 
@@ -65,14 +68,40 @@ class ChallengeStatementViewSet(ModelViewSet):
         # queryset = ChallengeStatement.objects.filter(post_type = 'Active' ,
         #                                              is_archieve=False).order_by('-created_at')
 
-        queryset = ChallengeStatement.objects.filter(post_type = 'Active').order_by('-created_at')
+        if request.GET.get('order_by') == "New":
+            queryset = ChallengeStatement.objects.filter(post_type = 'Active').order_by('-created_at')
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = ListRetrieveChallengeStatementSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            else:
+                serializer = ListRetrieveChallengeStatementSerializer(queryset, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
 
-        serializer = ListRetrieveChallengeStatementSerializer(queryset, many=True)
+        elif request.GET.get('order_by') == "Old":
+            queryset = ChallengeStatement.objects.filter(post_type='Active').order_by('created_at')
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = ListRetrieveChallengeStatementSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            else:
+                serializer = ListRetrieveChallengeStatementSerializer(queryset, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+            queryset = ChallengeStatement.objects.filter(post_type='Active').order_by('created_at')
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = ListRetrieveChallengeStatementSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            else:
+                serializer = ListRetrieveChallengeStatementSerializer(queryset, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
         # data ={
         #     'challenges':serializer.data,
         #     # 'first_name': pid.full_name()
         # }
-        return Response(serializer.data)
 
     # @action(detail=False, methods=['get'])
     # def list_my_challenges(self, request, *args, **kwargs):

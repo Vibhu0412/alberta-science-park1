@@ -15,6 +15,9 @@ class Industry(models.Model):
     # id = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, primary_key=True)
     name = models.CharField(max_length=50, choices=INDUSTRY_CHOICES)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
     class META:
         verbose_name = 'Challenge Industry'
         verbose_name_plural = 'Challenge Industries'

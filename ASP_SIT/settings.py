@@ -138,6 +138,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+print('MEDIA_ROOOT ======================',MEDIA_ROOT)
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -145,11 +149,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api.User'
 
+# PAGE_SIZE = 2
 # REST framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 2,
     # "DEFAULT_RENDERER_CLASSES": (
     #     "rest_framework.renderers.JSONRenderer",
     # )
@@ -225,4 +235,4 @@ GRAPH_MODELS = {
 
 
 # LIVE DOMAIN NAME
-DOMAIN_NAME = "https://dev.thesciencepark.dev/"
+DOMAIN_NAME = "http://`localhost`:3000/"

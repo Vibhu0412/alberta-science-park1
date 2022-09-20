@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import User, PersonalInformation, BusinessInformation, UserRole, InvitedUser
+from .models import User, PersonalInformation, BusinessInformation, UserRole, InvitedUser, PersonalEducation\
+    ,ProfessionalExperience, LanguagesSpoken,PersonalDocumentUpload, HonorsAndAwards, PersonalCertificates
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -44,7 +45,7 @@ admin.site.unregister(Group)
 
 
 class PersonalInformationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'first_name', 'last_name', 'office_phone', 'education', 'position')
+    list_display = ('id', 'user', 'first_name', 'last_name', 'office_phone')
 
 
 class BusinessInformationAdmin(admin.ModelAdmin):
@@ -54,9 +55,25 @@ class BusinessInformationAdmin(admin.ModelAdmin):
 class InvitedUserAdmin(admin.ModelAdmin):
     list_display = ('id', 'email', 'invited_by', 'is_registered', 'can_invite_others','company_name')
 
+@admin.register(PersonalEducation)
+class PersonalEducationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user','school','degree','field_of_study','start_date','end_date')
+
+@admin.register(ProfessionalExperience)
+class ProfessionalExperienceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user','industry','company_name','employment_type')
+
+@admin.register(LanguagesSpoken)
+class LanguagesSpokenAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user','language_name','language_proficiency')
 
 admin.site.register(PersonalInformation, PersonalInformationAdmin)
 admin.site.register(BusinessInformation, BusinessInformationAdmin)
 admin.site.register(UserRole)
+
+admin.site.register(HonorsAndAwards)
+admin.site.register(PersonalCertificates)
+
+admin.site.register(PersonalDocumentUpload)
 admin.site.register(InvitedUser, InvitedUserAdmin)
 admin.site.site_header = "Alberta Science Park"

@@ -74,9 +74,9 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return self.is_staff
 
-    @property
-    def full_name(self):
-        return f'{self.Personal.first_name} {self.Personal.last_name}'
+    # @property
+    # def full_name(self):
+    #     return f'{self.Personal.first_name} {self.Personal.last_name}'
 
     class META:
         verbose_name = 'user'
@@ -84,33 +84,27 @@ class User(AbstractBaseUser):
 
 
 class PersonalInformation(models.Model):
-    JUNIOR = 'Junior'
-    SENIOR = 'Senior'
-    EXPERT = 'Expert'
-
-    EXPERIENCE_LEVEL_CHOICES = (
-        (JUNIOR, 'Junior'),
-        (SENIOR, 'Senior'),
-        (EXPERT, 'Expert'),
-    )
     user = models.OneToOneField(User, related_name="personal", on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30, blank=True, null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
     personal_email = models.EmailField(unique=True, blank=True, null=True)
     personal_skills = models.CharField(max_length=2000, blank=True, null=True)
 
-    office_phone = models.CharField(max_length=13, blank=True, null=True)
-    education = models.CharField(max_length=255, blank=True, null=True)
-    position = models.CharField(max_length=255, blank=True, null=True)
-    languages_spoken = models.CharField(max_length=255, blank=True, null=True)
-    experience_level = models.CharField(max_length=7, choices=EXPERIENCE_LEVEL_CHOICES, default='Junior')
+    job_title = models.CharField(max_length=400, blank=True, null=True)
+    headline = models.CharField(max_length=400, blank=True, null=True)
+    bio = models.CharField(max_length=400, blank=True, null=True)
 
+    office_phone = models.CharField(max_length=13, blank=True, null=True)
+    personal_phone = models.CharField(max_length=13, blank=True, null=True)
     address_line_1 = models.CharField(max_length=100, blank=True, null=True)
     address_line_2 = models.CharField(max_length=100, blank=True, null=True)
     # profile_picture = models.ImageField(upload_to='userprofile', blank=True)
     city = models.CharField(max_length=20, blank=True, null=True)
     state = models.CharField(max_length=20, blank=True, null=True)
     country = models.CharField(max_length=20, blank=True, null=True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Personal Information'
@@ -126,7 +120,95 @@ class PersonalInformation(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 
+class PersonalDocumentUpload(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='upload_documents',blank=True, null=True)
+    # upload_documents = models.FileField(upload_to='upload/')
+    upload_documents = models.FileField(upload_to='documents/')
 
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.user)
+
+class PersonalEducation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='personal_education')
+    school = models.CharField(max_length=40, blank=True, null=True)
+    degree = models.CharField(max_length=40, blank=True, null=True)
+    field_of_study = models.CharField(max_length=40, blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.user)
+
+class ProfessionalExperience(models.Model):
+    EMPLOYMENT_TYPE_CHOICES = (
+        ('Full-time', 'Full-time'),
+        ('Part-time', 'Part-time'),
+        ('Self-Employed','Self-Employed'),
+        ('Freelance','Freelance'),
+        ('Internship','Internship'),
+        ('Trainee','Trainee'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='professional_experience')
+    industry = models.CharField(max_length=40, blank=True, null=True)
+    # profile_headline = models.CharField(max_length=40, blank=True, null=True)
+    company_name = models.CharField(max_length=40, blank=True, null=True)
+    designation_title = models.CharField(max_length=40, blank=True, null=True)
+
+    employment_type = models.CharField(choices=EMPLOYMENT_TYPE_CHOICES,max_length=60, blank=True, null=True)
+    location = models.CharField(max_length=40, blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.user)
+
+class LanguagesSpoken(models.Model):
+    LANGUAGE_PROFICIENCY = (
+        ('No Proficiency', 'No Proficiency'),
+        ('Elementary Proficiency', 'Elementary Proficiency'),
+        ('Limited Working Proficiency','Limited Working Proficiency'),
+        ('Professional Working Proficiency','Professional Working Proficiency'),
+        ('Native / Bilingual Proficiency','Native / Bilingual Proficiency'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='languages_spoken')
+    language_name = models.CharField(max_length=40, blank=True, null=True)
+    language_proficiency = models.CharField(choices=LANGUAGE_PROFICIENCY,max_length=60, blank=True, null=True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return str(self.user)
+
+class PersonalCertificates(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='personal_certificates')
+    certificate_name = models.CharField(max_length=200, blank=True, null = True)
+    issue_authority = models.CharField(max_length=200, blank=True, null = True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return str(self.user)
+
+class HonorsAndAwards(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='honor_and_awards')
+    title = models.CharField(max_length=200, blank=True, null=True)
+    issuer = models.CharField(max_length=200, blank=True, null=True)
+    description = models.CharField(max_length=200, blank=True, null=True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.user)
 
 
 class BusinessInformation(models.Model):
@@ -161,6 +243,9 @@ class BusinessInformation(models.Model):
 
     invite_through_company = models.BooleanField(default=False)
 
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         verbose_name = 'Business Information'
         verbose_name_plural = 'Business Information'
@@ -170,6 +255,16 @@ class BusinessInformation(models.Model):
 
     def full_address(self):
         return f'{self.company_address_line_1} {self.company_address_line_2}'
+
+class BusinessLabEquipments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="lab_equipments")
+    hardware_software = models.CharField(max_length=400, blank=True, null=True)
+    title_of_equipment = models.CharField(max_length=400, blank=True, null=True)
+    equipment_description = models.CharField(max_length=400, blank=True, null=True)
+    usability = models.CharField(max_length=400, blank=True, null=True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
 
 
 class InvitedUser(models.Model):
@@ -185,7 +280,7 @@ class InvitedUser(models.Model):
     is_registered = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
-    modified_at = models.DateTimeField(default=timezone.now)
+    modified_at = models.DateTimeField(auto_now=True)
 
     class META:
         verbose_name = 'Invited User'

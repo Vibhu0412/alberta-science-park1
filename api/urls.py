@@ -1,10 +1,25 @@
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 from rest_framework_simplejwt import views as jwt_views
+from rest_framework import routers
 
 from .views import UserRegistrationView, UserLoginView, UserChangePasswordView, \
     SendPasswordResetEmailView, UserPasswordResetView, PersonalProfileCreateView, PersonalProfileUpdateView, \
     BusinessProfileCreateView, BusinessProfileUpdateView, RoleRegisterView, SendInviteLinkView, FetchInvitedUserView, \
-    FetchCompanyApiView, InviteNotificationApiView
+    FetchCompanyApiView, InviteNotificationApiView, PersonalEducationViewSet,ProfessionalExperienceViewSet, \
+    LanguagesSpokenViewSet, BusinessLabEquipmentsViewSet ,PersonalDocumentUploadViewSet,HonorsAndAwardsViewSet,\
+    PersonalCertificatesViewSet
+
+router = routers.DefaultRouter()
+router.register(r'personal/education', PersonalEducationViewSet, basename='personal-education')
+router.register(r'professional/experience', ProfessionalExperienceViewSet, basename='professional-experience')
+router.register(r'languages/spoken', LanguagesSpokenViewSet, basename='languages-spoken')
+router.register(r'personal/awards', HonorsAndAwardsViewSet, basename='personal-awards')
+router.register(r'personal/certificates', PersonalCertificatesViewSet, basename='personal-certificates')
+router.register(r'lab/equipments', BusinessLabEquipmentsViewSet, basename='lab-equipments')
+
+router.register(r'file/upload', PersonalDocumentUploadViewSet, basename='file-upload')
 
 urlpatterns = [
     path('token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),
@@ -36,5 +51,9 @@ urlpatterns = [
 
     path('invite-notification/', InviteNotificationApiView.as_view(), name='notification'),
     path('invite-notification/<int:pk>', InviteNotificationApiView.as_view(), name='notification')
+]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
-]
+urlpatterns+=router.urls
+
+# if settings.DEBUG:
+#     urlpatterns

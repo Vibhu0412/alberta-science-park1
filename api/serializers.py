@@ -2,7 +2,9 @@ from rest_framework import serializers
 # from .signals import create_business_profile
 from . import signals
 from .activationtokens import account_activation_token
-from .models import User, PersonalInformation, BusinessInformation, UserRole, InvitedUser
+from .models import User, PersonalInformation, BusinessInformation, UserRole, InvitedUser, PersonalEducation\
+    ,ProfessionalExperience, LanguagesSpoken, BusinessLabEquipments, PersonalDocumentUpload, HonorsAndAwards,\
+    PersonalCertificates
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode, base36_to_int
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -306,8 +308,8 @@ class PersonalProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonalInformation
-        fields = ['id', 'first_name', 'last_name', 'personal_email', 'office_phone', 'education', 'position',
-                  'languages_spoken', 'experience_level','personal_skills',
+        fields = ['id', 'first_name', 'last_name', 'personal_email', 'office_phone','personal_skills',
+                  'personal_phone','job_title','headline','bio',
                   'address_line_1', 'address_line_2', 'city', 'state', 'country']
 
     def validate(self, attrs):
@@ -329,8 +331,8 @@ class PersonalProfileSerializer(serializers.ModelSerializer):
 class PersonalProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonalInformation
-        fields = ['id', 'first_name', 'last_name', 'personal_email', 'office_phone', 'education', 'position',
-                  'languages_spoken', 'experience_level','personal_skills',
+        fields = ['id', 'first_name', 'last_name', 'personal_email', 'office_phone','personal_skills',
+                  'personal_phone', 'job_title', 'headline', 'bio',
                   'address_line_1', 'address_line_2', 'city', 'state', 'country']
 
     def validate(self, attrs):
@@ -346,10 +348,12 @@ class PersonalProfileUpdateSerializer(serializers.ModelSerializer):
         instance.personal_email = validated_data.get("personal_email", instance.personal_email)
         instance.personal_skills = validated_data.get("personal_skills", instance.personal_skills)
         instance.office_phone = validated_data.get("office_phone", instance.office_phone)
-        instance.education = validated_data.get("education", instance.education)
-        instance.position = validated_data.get("position", instance.position)
-        instance.languages_spoken = validated_data.get("languages_spoken", instance.languages_spoken)
-        instance.experience_level = validated_data.get("experience_level", instance.experience_level)
+
+        instance.personal_phone = validated_data.get("personal_phone", instance.personal_phone)
+        instance.job_title = validated_data.get("job_title", instance.job_title)
+        instance.headline = validated_data.get("headline", instance.headline)
+        instance.bio = validated_data.get("bio", instance.bio)
+
         instance.address_line_1 = validated_data.get("address_line_1", instance.address_line_1)
         instance.address_line_2 = validated_data.get("address_line_2", instance.address_line_2)
         instance.city = validated_data.get("city", instance.city)
@@ -567,9 +571,53 @@ class FetchCompanySerializer(serializers.ModelSerializer):
         model = BusinessInformation
         fields = ('id', 'user', 'company_name')
 
-
 class InviteNotificationSerializer(serializers.ModelSerializer):
     invited_by = UserSerializer()
     class Meta:
         model = InvitedUser
         fields=('id','invited_by','company_name','is_active','is_accepted','is_decline','created_at',)
+
+
+class PersonalEducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalEducation
+        fields='__all__'
+
+class ProfessionalExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfessionalExperience
+        fields='__all__'
+
+class LanguagesSpokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LanguagesSpoken
+        fields='__all__'
+
+class HonorsAndAwardsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HonorsAndAwards
+        fields='__all__'
+
+class PersonalCertificatesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonalCertificates
+        fields='__all__'
+class BusinessLabEquipmentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusinessLabEquipments
+        fields = "__all__"
+
+def validate_file_extension(value):
+    import os
+    from django.core.exceptions import ValidationError
+    print("VALUE ===== ", value)
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
+    valid_extensions = ['.pdf', '.doc', '.docx', '.jpg', '.png',
+                        '.xlsx', '.xls','.pptx,','.ppt','.gif']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError('Unsupported file extension.')
+class PersonalDocumentUploadSerializer(serializers.ModelSerializer):
+    upload_documents = serializers.FileField(use_url=True,validators=[validate_file_extension])
+    class Meta:
+        model = PersonalDocumentUpload
+        fields = "__all__"
