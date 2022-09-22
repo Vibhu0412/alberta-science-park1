@@ -95,10 +95,10 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'spark_db',
-#         'USER': 'db_admin',
-#         'PASSWORD': 'db_admin@12345',
-#         'HOST': 'localhost',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'a1b2c3',
+#         'HOST': '34.134.50.71',
 #         'PORT': '5432',
 #     }
 # }
@@ -139,7 +139,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-print('MEDIA_ROOOT ======================',MEDIA_ROOT)
+# print('MEDIA_ROOOT ======================',MEDIA_ROOT)
 MEDIA_URL = '/media/'
 
 # Default primary key field type

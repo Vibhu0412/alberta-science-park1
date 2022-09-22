@@ -99,9 +99,9 @@ class PersonalInformation(models.Model):
     address_line_1 = models.CharField(max_length=100, blank=True, null=True)
     address_line_2 = models.CharField(max_length=100, blank=True, null=True)
     # profile_picture = models.ImageField(upload_to='userprofile', blank=True)
-    city = models.CharField(max_length=20, blank=True, null=True)
-    state = models.CharField(max_length=20, blank=True, null=True)
-    country = models.CharField(max_length=20, blank=True, null=True)
+    city = models.CharField(max_length=40, blank=True, null=True)
+    state = models.CharField(max_length=40, blank=True, null=True)
+    country = models.CharField(max_length=40, blank=True, null=True)
 
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(auto_now=True)
@@ -135,12 +135,17 @@ class PersonalEducation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='personal_education')
     school = models.CharField(max_length=40, blank=True, null=True)
     degree = models.CharField(max_length=40, blank=True, null=True)
+    education_description = models.CharField(max_length=400, blank=True, null=True)
+
     field_of_study = models.CharField(max_length=40, blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
 
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering=['-created_at']
 
     def __str__(self):
         return str(self.user)
@@ -159,6 +164,7 @@ class ProfessionalExperience(models.Model):
     # profile_headline = models.CharField(max_length=40, blank=True, null=True)
     company_name = models.CharField(max_length=40, blank=True, null=True)
     designation_title = models.CharField(max_length=40, blank=True, null=True)
+    experience_description = models.CharField(max_length=400, blank=True, null=True)
 
     employment_type = models.CharField(choices=EMPLOYMENT_TYPE_CHOICES,max_length=60, blank=True, null=True)
     location = models.CharField(max_length=40, blank=True, null=True)
@@ -167,6 +173,9 @@ class ProfessionalExperience(models.Model):
 
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering=['-created_at']
 
     def __str__(self):
         return str(self.user)
@@ -185,6 +194,10 @@ class LanguagesSpoken(models.Model):
 
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering=['-created_at']
+
     def __str__(self):
         return str(self.user)
 
@@ -195,6 +208,10 @@ class PersonalCertificates(models.Model):
 
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering=['-created_at']
+
     def __str__(self):
         return str(self.user)
 
@@ -206,6 +223,9 @@ class HonorsAndAwards(models.Model):
 
     created_at = models.DateTimeField(default=timezone.now)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering=['-created_at']
 
     def __str__(self):
         return str(self.user)

@@ -262,6 +262,8 @@ class PersonalProfileCreateView(APIView):
                 user_invited = InvitedUser.objects.filter(email=request.user.email).values()
                 print("*************", user_invited)
                 invited_by = user_invited[0]['invited_by_id']
+                get_invited_by_username = User.objects.get(id = invited_by)
+                print("INVITED_BY",get_invited_by_username.username)
             else:
                 invited_by = None
 
@@ -271,7 +273,7 @@ class PersonalProfileCreateView(APIView):
             user_data = {
                 'id': user_info.id,
                 'email': user_info.email,
-                'invited_by': invited_by,
+                'invited_by': get_invited_by_username,
                 # 'role': roles_list,
                 'username': user_info.username,
                 'is_fresh_login': user_info.is_fresh_login,
