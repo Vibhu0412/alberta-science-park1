@@ -265,7 +265,7 @@ class PersonalProfileCreateView(APIView):
                 get_invited_by_username = User.objects.get(id = invited_by)
                 print("INVITED_BY",get_invited_by_username.username)
             else:
-                invited_by = None
+                get_invited_by_username = None
 
             # Getting Account Information
             user_info = User.objects.get(id=request.user.id)
