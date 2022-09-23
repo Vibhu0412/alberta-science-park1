@@ -55,7 +55,6 @@ class UserRegistrationView(APIView):
         # print("COMAPNY NAME IN VIEWS=========", company)
 
         print(request.data)
-
         serializer = self.serializer_class(data=request.data)
         print("SERIALIZER============", serializer)
         valid = serializer.is_valid(raise_exception=False)
@@ -259,13 +258,16 @@ class PersonalProfileCreateView(APIView):
 
             # invited_by = InvitedUser
             if InvitedUser.objects.filter(email=request.user.email).exists():
-                user_invited = InvitedUser.objects.filter(email=request.user.email).values()
-                print("*************", user_invited)
-                invited_by = user_invited[0]['invited_by_id']
-                get_invited_by_username = User.objects.get(id = invited_by)
-                print("INVITED_BY",get_invited_by_username.username)
+                user_invited = InvitedUser.objects.filter(email=request.user.email)
+                # print("*************", user_invited)
+                # invited_by = user_invited[0]['invited_by_id']
+                # print("+++++++++++++++",invited_by)
+                serializer_user = FetchInvitedUserSerializer(user_invited, many=True)
+                invited_by = serializer_user.data
+                print(serializer.data)
+                # print("INVITED_BY",invited_by.username)
             else:
-                get_invited_by_username = None
+                invited_by = None
 
             # Getting Account Information
             user_info = User.objects.get(id=request.user.id)
@@ -273,7 +275,7 @@ class PersonalProfileCreateView(APIView):
             user_data = {
                 'id': user_info.id,
                 'email': user_info.email,
-                'invited_by': get_invited_by_username,
+                'invited_by': invited_by,
                 # 'role': roles_list,
                 'username': user_info.username,
                 'is_fresh_login': user_info.is_fresh_login,

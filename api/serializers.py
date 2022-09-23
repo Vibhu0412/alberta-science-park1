@@ -101,19 +101,20 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         #     else:
         #         raise serializers.ValidationError('Company Profile Does Not Exists.')
         #
-        # try:
-        #     invited_user = InvitedUser.objects.get(email=instance.email)
-        #     print('Invited User ', invited_user)
-        #     # Setting the registration value to True
-        #     invited_user.is_registered = True
-        #     invited_user.save()
-        #
+        try:
+            invited_user = InvitedUser.objects.filter(email=instance.email).update(is_registered=True)
+            # print('Invited User ', invited_user['is_registered'])
+            # print('Invited User ', invited_user['is_registered'])
+            # # Setting the registration value to True
+            # invited_user.is_registered = True
+            # invited_user.save()
+
         #     # Updating the can_invite_others field of user
         #     instance.can_invite_others = invited_user.can_invite_others
         #     instance.save()
-        #
-        # except:
-        #     pass
+
+        except:
+            pass
 
         instance.save()
 
@@ -303,6 +304,10 @@ class UserPasswordResetSerializer(serializers.Serializer):
             PasswordResetTokenGenerator().check_token(user, token)
             raise serializers.ValidationError("Token is not Valid or expired")
 
+# class InvitedBySerializer(serializers.Serializer):
+#     class Meta:
+#         model = InvitedUser
+#         fields=['']
 
 class PersonalProfileSerializer(serializers.ModelSerializer):
     # invited_by = serializers.CharField(source='inviteduser.invited_by')
